@@ -6,6 +6,9 @@
 /santa-letter-t3/.next
 /santa-letter-t3/.pnpm
 node_modules/
+**/node_modules/.pnpm/**
+**/node_modules/@next/**
+**/node_modules/@cloudflare/**
 
 /.pnp
 .pnp.*
