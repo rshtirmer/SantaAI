@@ -5,6 +5,7 @@
 /santa-letter-t3/node_modules/**
 /santa-letter-t3/.next
 /santa-letter-t3/.pnpm
+node_modules/
 
 /.pnp
 .pnp.*
