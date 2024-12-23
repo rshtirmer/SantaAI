@@ -41,12 +41,13 @@ export const SantaLetterForm = () => {
     };
 
     return (
-        <div className="min-h-screen bg-stone-100 flex justify-center items-center p-8">
+        <div className="min-h-screen flex justify-center items-center p-8 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: 'url("/IMG_7015.jpg")' }}>
             <div className="max-w-3xl w-full">
                 <h1 className="font-serif text-6xl mb-2 text-[#2C3639]">Letters to</h1>
                 <h1 className="font-serif text-6xl mb-12 text-[#8B0000]">Santa Claus</h1>
 
-                <div className="bg-white rounded-lg p-12 shadow-sm">
+                <div className="bg-transparent rounded-lg p-12 shadow-sm">
                     <textarea
                         value={letter}
                         onChange={(e) => setLetter(e.target.value)}
