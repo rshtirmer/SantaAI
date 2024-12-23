@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, Gift, Sparkles, Stars, Mic, Square, Camera, Upload } from 'lucide-react';
+import { Gift, Sparkles, Stars, Mic, Square, Camera } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
@@ -226,13 +226,6 @@ const SantaLetterForm = () => {
       <div className="min-h-screen overflow-y-auto bg-black/20">
         <SnowfallEffect />
         
-        <ChristmasIcon color="text-red-500">
-          <Bell className="w-8 h-8 absolute -left-20 top-20" />
-        </ChristmasIcon>
-        <ChristmasIcon color="text-green-500">
-          <Gift className="w-8 h-8 absolute -right-16 top-40" />
-        </ChristmasIcon>
-
         <div className="flex justify-center items-center p-8 pb-16">
         <div className="max-w-3xl w-full">
         <h1 className="font-serif text-6xl mb-2 text-white">Letters to</h1>
