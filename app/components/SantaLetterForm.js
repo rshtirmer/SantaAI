@@ -225,7 +225,15 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
     };
   
     return (
-      <div className="min-h-screen p-5 bg-gradient-to-b from-[#1a3b5c] to-[#2d5c8c] flex justify-center items-center font-['Mountains_of_Christmas'] relative overflow-hidden">
+      <div 
+        className="min-h-screen p-5 flex justify-center items-center font-['Mountains_of_Christmas'] relative overflow-hidden"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/christmas-bg.jpg)',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
         <SnowfallEffect />
   
         <ChristmasIcon color="text-red-500">
