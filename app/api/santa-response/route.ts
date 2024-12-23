@@ -1,9 +1,7 @@
-// pages/api/santa-response.js
 import { NextResponse } from 'next/server';
+import { prisma } from '../db';
 
-export const runtime = 'edge';
-
-export async function POST(req) {
+export async function POST(req: Request) {
   try {
     const { letter } = await req.json();
     
@@ -37,6 +35,14 @@ export async function POST(req) {
 
     const data = await response.json();
     const santaResponse = data.content[0].text;
+
+    // Store the letter and response in the database
+    await prisma.letter.create({
+      data: {
+        childLetterText: letter,
+        santaResponseText: santaResponse,
+      },
+    });
 
     return NextResponse.json({ response: santaResponse });
   } catch (error) {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Gift, Sparkles, Stars, Mic, Square } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -129,15 +129,23 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
   
   // Create a separate client component for snowflakes
   const SnowfallEffect = () => {
-    const [snowflakes] = useState(() => 
-      Array.from({ length: 50 }, (_, i) => ({
-        id: i,
-        left: `${Math.random() * 100}vw`,
-        animationDuration: `${Math.random() * 5 + 5}s`,
-        opacity: Math.random() * 0.8 + 0.2,
-      }))
-    );
+    const [mounted, setMounted] = useState(false);
+    const [snowflakes, setSnowflakes] = useState([]);
   
+    useEffect(() => {
+      setMounted(true);
+      setSnowflakes(
+        Array.from({ length: 50 }, (_, i) => ({
+          id: i,
+          left: `${Math.random() * 100}vw`,
+          animationDuration: `${Math.random() * 5 + 5}s`,
+          opacity: Math.random() * 0.8 + 0.2,
+        }))
+      );
+    }, []);
+  
+    if (!mounted) return null;
+    
     return (
       <>
         {snowflakes.map((flake) => (
@@ -177,6 +185,9 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
     const [response, setResponse] = useState('');
     const [error, setError] = useState('');
     const [showTips, setShowTips] = useState(false);
+    const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef(null);
   
     const sendLetter = async () => {
       if (letter.trim() === '') {
@@ -314,12 +325,12 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
                 </div>
                 
                 {/* Letter Content */}
-                <div className="mt-8 space-y-4 text-black text-lg leading-relaxed font-['Mountains_of_Christmas']">
+                <div className="mt-8 space-y-4 text-black text-lg leading-relaxed font-['Mountains_of_Christmas'] mb-40 sm:mb-16">
                   {response}
                 </div>
                 
                 {/* Santa&apos;s Seal */}
-                <div className="absolute bottom-8 right-8 w-32 h-32 transform -rotate-12">
+                <div className="absolute bottom-2 sm:bottom-8 right-8 w-32 h-32 transform -rotate-12">
                   <img 
                     src="/seal.png" 
                     alt="Santa&apos;s Seal of Approval" 
@@ -332,6 +343,22 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
               <div className="mt-4 flex gap-4 justify-center flex-wrap">
                 <button
                   onClick={async () => {
+                    // If audio is playing, pause it
+                    if (isPlaying && audioRef.current) {
+                      audioRef.current.pause();
+                      setIsPlaying(false);
+                      return;
+                    }
+
+                    // If we already have audio loaded, just play it
+                    if (audioRef.current) {
+                      audioRef.current.play();
+                      setIsPlaying(true);
+                      return;
+                    }
+
+                    // Otherwise, fetch and play new audio
+                    setIsLoadingAudio(true);
                     try {
                       const res = await fetch('/api/text-to-speech', {
                         method: 'POST',
@@ -345,22 +372,55 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
 
                       const audioBlob = await res.blob();
                       const audioUrl = URL.createObjectURL(audioBlob);
-                      const audio = new Audio(audioUrl);
-                      await audio.play();
+                      
+                      // Create new audio instance
+                      audioRef.current = new Audio(audioUrl);
+                      
+                      // Set up event listeners
+                      audioRef.current.onended = () => {
+                        setIsPlaying(false);
+                        URL.revokeObjectURL(audioUrl);
+                        audioRef.current = null;
+                      };
 
-                      // Clean up the URL after playing
-                      audio.onended = () => URL.revokeObjectURL(audioUrl);
+                      audioRef.current.onpause = () => {
+                        setIsPlaying(false);
+                      };
+
+                      audioRef.current.onplay = () => {
+                        setIsPlaying(true);
+                      };
+
+                      // Play the audio
+                      await audioRef.current.play();
+                      setIsPlaying(true);
                     } catch (error) {
                       console.error('Error playing audio:', error);
                       alert('Sorry, Santa lost his voice! Please try again later. 🎅');
+                    } finally {
+                      setIsLoadingAudio(false);
                     }
                   }}
-                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-full text-lg font-bold hover:bg-blue-500 transition-colors"
+                  disabled={isLoadingAudio}
+                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-full text-lg font-bold hover:bg-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                  Listen to Santa&apos;s Letter
+                  {isLoadingAudio ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {isPlaying ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        ) : (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        )}
+                      </svg>
+                      {isPlaying ? 'Pause' : 'Listen to Santa\'s Letter'}
+                    </>
+                  )}
                 </button>
                 <button
                   onClick={async () => {
