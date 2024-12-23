@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         max_tokens: 1024,
         messages: [{
           role: 'user',
-          content: `You are Santa Claus responding to a child's letter. Keep the response cheerful, warm, and encouraging, but not too long (max 3 sentences). Where appropriate, call the child "my <adjective> little elf. Here's the letter: ${letter}`
+          content: `You are Santa Claus responding to a child's letter. Keep the response cheerful, warm, and encouraging, but not too long (max 3 sentences). Where appropriate, call the child "my <adjective> little elf. Start you're response with Dear {name} or Dear child. Here's the letter: ${letter}`
         }]
       })
     });
