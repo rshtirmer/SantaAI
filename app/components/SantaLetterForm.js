@@ -222,8 +222,8 @@ const SantaLetterForm = () => {
 
   return (
     <div className="min-h-screen w-full bg-fixed bg-cover bg-center bg-no-repeat relative"
-      style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/christmas-bg.jpg")', backgroundAttachment: 'fixed' }}>
-      <div className="min-h-screen overflow-y-auto bg-black/50">
+      style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)), url("/snow.jpeg")', backgroundAttachment: 'fixed' }}>
+      <div className="min-h-screen overflow-y-auto bg-black/20">
         <SnowfallEffect />
         
         <ChristmasIcon color="text-red-500">

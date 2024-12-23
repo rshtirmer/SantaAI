@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     }
 
     // Store the letter and response in the database
-    await prisma.letter.create({
+    await prisma.letterClaude.create({
       data: {
         childLetterText: letter,
         santaResponseText: santaResponse,

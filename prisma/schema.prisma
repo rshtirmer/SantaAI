@@ -19,3 +19,13 @@ model Letter {
 
   @@map("letters")
 }
+
+model LetterClaude {
+  id               Int      @id @default(autoincrement())
+  childLetterText  String
+  santaResponseText String?
+  allowSharing     Boolean  @default(true)
+  createdAt        DateTime @default(now())
+
+  @@map("letters_claude")
+}
