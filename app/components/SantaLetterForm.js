@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, Gift, Sparkles, Stars, Mic, Square } from 'lucide-react';
+import { Bell, Gift, Sparkles, Stars, Mic, Square, Camera, Upload } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
@@ -98,32 +98,27 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
     };
   
     return (
-      <div className="flex items-center gap-2 mb-4">
-        <button
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={disabled || isProcessing}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold ${
-            isRecording 
-              ? 'bg-red-600 text-white animate-pulse' 
-              : 'bg-green-600 text-white'
-          } disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
-        >
-          {isRecording ? (
-            <>
-              <Square className="w-5 h-5" />
-              Stop Recording
-            </>
-          ) : (
-            <>
-              <Mic className="w-5 h-5" />
-              {isProcessing ? 'Processing...' : 'Record Your Letter'}
-            </>
-          )}
-        </button>
-        {isRecording && (
-          <span className="text-red-600 animate-pulse">Recording...</span>
+      <button
+        onClick={isRecording ? stopRecording : startRecording}
+        disabled={disabled || isProcessing}
+        className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold ${
+          isRecording 
+            ? 'bg-red-600 text-white animate-pulse' 
+            : 'bg-green-600 text-white'
+        } disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
+      >
+        {isRecording ? (
+          <>
+            <Square className="w-5 h-5" />
+            Stop Recording
+          </>
+        ) : (
+          <>
+            <Mic className="w-5 h-5" />
+            {isProcessing ? 'Processing...' : 'Record Your Letter'}
+          </>
         )}
-      </div>
+      </button>
     );
   };
   
@@ -187,6 +182,7 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
     const [showTips, setShowTips] = useState(false);
     const [isLoadingAudio, setIsLoadingAudio] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isProcessingImage, setIsProcessingImage] = useState(false);
     const audioRef = useRef(null);
   
     const sendLetter = async () => {
@@ -271,11 +267,59 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
               </div>
             )}
   
-            <div className="relative">
-              <VoiceRecorder 
-                onTranscription={(text) => setLetter(current => current + text)}
-                disabled={isSending}
-              />
+            <div className="relative space-y-4">
+              <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+                <VoiceRecorder 
+                  onTranscription={(text) => setLetter(current => current + text)}
+                  disabled={isSending}
+                />
+                <label className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold bg-purple-600 text-white cursor-pointer hover:bg-purple-500 transition-colors text-center ${isProcessingImage ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                  <Camera className="w-5 h-5" />
+                  {isProcessingImage ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Take Photo or Upload'
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={async (e) => {
+                      if (isProcessingImage) return;
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      const formData = new FormData();
+                      formData.append('image', file);
+
+                      setIsProcessingImage(true);
+                      try {
+                        const res = await fetch('/api/vision', {
+                          method: 'POST',
+                          body: formData,
+                        });
+
+                        if (!res.ok) throw new Error('Failed to process image');
+
+                        const data = await res.json();
+                        setLetter(data.text);
+                      } catch (error) {
+                        console.error('Error processing image:', error);
+                        alert('Sorry, there was an error reading your letter. Please try again!');
+                      } finally {
+                        setIsProcessingImage(false);
+                        // Clear the input value so the same file can be selected again
+                        e.target.value = '';
+                      }
+                    }}
+                    disabled={isProcessingImage}
+                  />
+                </label>
+              </div>
               <textarea
                 value={letter}
                 onChange={(e) => setLetter(e.target.value)}
