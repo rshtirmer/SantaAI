@@ -45,7 +45,7 @@ export const SantaLetterForm = () => {
             style={{ backgroundImage: 'url("/IMG_7015.jpg")' }}>
             <div className="max-w-3xl w-full">
                 <h1 className="font-serif text-6xl mb-2 text-[#2C3639]">Letters to</h1>
-                <h1 className="font-serif text-6xl mb-12 text-[#8B0000]">Santa Claus</h1>
+                <h1 className="font-serif text-6xl mb-12 text-[#8B0000]">Santa Claude</h1>
 
                 <div className="bg-transparent rounded-lg p-12 shadow-sm">
                     <textarea
