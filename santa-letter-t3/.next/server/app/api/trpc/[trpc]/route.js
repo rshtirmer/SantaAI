@@ -1,0 +1,14 @@
+const CHUNK_PUBLIC_PATH = "server/app/api/trpc/[trpc]/route.js";
+const runtime = require("../../../../chunks/[turbopack]_runtime.js");
+runtime.loadChunk("server/chunks/9ac5b_next_dist_1a6094._.js");
+runtime.loadChunk("server/chunks/c6ee9_@trpc_server_dist_4fdf1e._.js");
+runtime.loadChunk("server/chunks/cdf59_zod_lib_index_mjs_c12735._.js");
+runtime.loadChunk("server/chunks/node_modules_drizzle-orm_5c6ce2._.js");
+runtime.loadChunk("server/chunks/node_modules_@anthropic-ai_sdk_1450e2._.js");
+runtime.loadChunk("server/chunks/node_modules_tr46_816df9._.js");
+runtime.loadChunk("server/chunks/node_modules_390172._.js");
+runtime.loadChunk("server/chunks/[root of the server]__ae2e65._.js");
+runtime.loadChunk("server/chunks/node_modules_formdata-node_lib_esm_fileFromPath_86315c.js");
+runtime.loadChunk("server/chunks/_b4ec8b._.js");
+runtime.getOrInstantiateRuntimeModule("[project]/.next-internal/server/app/api/trpc/[trpc]/route/actions.js [app-rsc] (ecmascript)", CHUNK_PUBLIC_PATH);
+module.exports = runtime.getOrInstantiateRuntimeModule("[project]/node_modules/.pnpm/next@15.1.2_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/src/app/api/trpc/[trpc]/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)", CHUNK_PUBLIC_PATH).exports;
