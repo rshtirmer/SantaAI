@@ -183,6 +183,7 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
     const [isLoadingAudio, setIsLoadingAudio] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isProcessingImage, setIsProcessingImage] = useState(false);
+    const [allowSharing, setAllowSharing] = useState(true);
     const audioRef = useRef(null);
   
     const sendLetter = async () => {
@@ -200,7 +201,7 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ letter }),
+          body: JSON.stringify({ letter, allowSharing }),
         });
   
         if (!res.ok) {
@@ -335,6 +336,19 @@ const VoiceRecorder = ({ onTranscription, disabled }) => {
               <div className="absolute top-2 right-2">
                 <Sparkles className="text-yellow-400 w-6 h-6 animate-pulse" />
               </div>
+            </div>
+
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <input
+                type="checkbox"
+                id="allowSharing"
+                checked={allowSharing}
+                onChange={(e) => setAllowSharing(e.target.checked)}
+                className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2 cursor-pointer"
+              />
+              <label htmlFor="allowSharing" className="text-gray-700 cursor-pointer select-none">
+                Allow my letter to be shared anonymously in Santa&apos;s letter collection
+              </label>
             </div>
             
             <button

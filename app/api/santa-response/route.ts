@@ -3,7 +3,7 @@ import { prisma } from '../db';
 
 export async function POST(req: Request) {
   try {
-    const { letter } = await req.json();
+    const { letter, allowSharing } = await req.json();
     
     if (!letter) {
       return NextResponse.json(
@@ -34,7 +34,11 @@ export async function POST(req: Request) {
     }
 
     const data = await response.json();
-    const santaResponse = data.content[0].text;
+    const santaResponse = data?.content?.[0]?.text;
+    if (!santaResponse) {
+      console.error('Invalid Claude API response:', data);
+      throw new Error('Invalid response from Claude API');
+    }
 
     // Store the letter and response in the database
     await prisma.letter.create({
