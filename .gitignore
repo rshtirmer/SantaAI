@@ -9,6 +9,8 @@ node_modules/
 **/node_modules/.pnpm/**
 **/node_modules/@next/**
 **/node_modules/@cloudflare/**
+**/node_modules/@vercel/**
+*.node
 
 /.pnp
 .pnp.*
